@@ -4,8 +4,6 @@ const studentRoutes = require("./routes/studentRoutes");
 
 const app = express();
 
-const PORT = 3000;
-
 // Middleware to read JSON data from requests
 app.use(express.json());
 
@@ -17,12 +15,10 @@ app.use("/students", studentRoutes);
 
 // Test route
 app.get("/", (req, res) => {
-    res.json({
-        message: "Student Management REST API is running"
-    });
+    res.status(200).send("Student Management REST API");
 });
 
 // Start server
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+app.listen(3000, () => {
+    console.log("Server is running on port 3000");
 });

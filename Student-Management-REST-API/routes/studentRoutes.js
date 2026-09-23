@@ -4,93 +4,71 @@ const router = express.Router();
 
 const students = require("../data/students");
 
-// GET all students
+// READ - Get all students
 router.get("/", (req, res) => {
-    res.status(200).json(students);
+    res.status(200).send(students);
 });
 
-// GET student by ID
+// READ - Get student by ID
 router.get("/:id", (req, res) => {
-    const id = parseInt(req.params.id);
+    let id = req.params.id;
 
-    const student = students.find(student => student.id === id);
+    let student = students.find(student => student.id == id);
 
     if (!student) {
-        return res.status(404).json({
-            message: "Student not found"
-        });
+        return res.status(404).send("Student not found");
     }
 
-    res.status(200).json(student);
+    res.status(200).send(student);
 });
 
-// POST create a new student
+// CREATE - Add a student
 router.post("/", (req, res) => {
-    const { name, course } = req.body;
+    let name = req.body.name;
+    let course = req.body.course;
 
-    if (!name || !course) {
-        return res.status(400).json({
-            message: "Name and course are required"
-        });
-    }
-
-    const newStudent = {
-        id: students.length > 0
-            ? Math.max(...students.map(student => student.id)) + 1
-            : 1,
+    let newStudent = {
+        id: students.length + 1,
         name: name,
         course: course
     };
 
     students.push(newStudent);
 
-    res.status(201).json(newStudent);
+    res.status(200).send("Student added");
 });
 
-// PUT update a student
+// UPDATE - Update a student
 router.put("/:id", (req, res) => {
-    const id = parseInt(req.params.id);
+    let id = req.params.id;
+    let name = req.body.name;
+    let course = req.body.course;
 
-    const student = students.find(student => student.id === id);
+    let student = students.find(student => student.id == id);
 
     if (!student) {
-        return res.status(404).json({
-            message: "Student not found"
-        });
-    }
-
-    const { name, course } = req.body;
-
-    if (!name || !course) {
-        return res.status(400).json({
-            message: "Name and course are required"
-        });
+        return res.status(404).send("Student not found");
     }
 
     student.name = name;
     student.course = course;
 
-    res.status(200).json(student);
+    res.status(200).send("Student updated");
 });
 
-// DELETE a student
+// DELETE - Delete a student
 router.delete("/:id", (req, res) => {
-    const id = parseInt(req.params.id);
+    let id = req.params.id;
 
-    const studentIndex = students.findIndex(student => student.id === id);
+    let index = students.findIndex(student => student.id == id);
 
-    if (studentIndex === -1) {
-        return res.status(404).json({
-            message: "Student not found"
-        });
+    if (index == -1) {
+        return res.status(404).send("Student not found");
     }
 
-    const deletedStudent = students.splice(studentIndex, 1);
+    students.splice(index, 1);
 
-    res.status(200).json({
-        message: "Student deleted successfully",
-        student: deletedStudent[0]
-    });
+    res.status(200).send("Student deleted");
 });
 
 module.exports = router;
